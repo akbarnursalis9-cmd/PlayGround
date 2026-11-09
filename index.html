@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#101a1d" />
+  <title>LAST LIGHT — Island Drop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game">
+    <canvas id="scene"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">L</span><span>LAST<span class="brand-light">LIGHT</span></span><i>ISLAND DROP</i></div>
+      <div class="match-info"><span class="live-dot"></span><span>LIVE MATCH</span><b id="aliveCount">13</b><span>ALIVE</span><em></em><span id="matchClock">00:00</span></div>
+      <button id="pauseBtn" class="icon-btn" aria-label="Pause">Ⅱ</button>
+    </header>
+
+    <section class="mission-card glass">
+      <div class="eyebrow"><span class="tiny-star">✦</span> OPERATION SUNFALL</div>
+      <div class="mission-title">BE THE <span>LAST ONE</span></div>
+      <div class="mission-sub">Eliminate rivals. Stay inside the safe zone.</div>
+      <div class="objective"><span class="objective-icon">⌖</span><div><b id="objectiveTitle">REACH THE SAFE ZONE</b><small id="objectiveSub">Move to the center of the island</small></div><span class="objective-arrow">↗</span></div>
+    </section>
+
+    <div class="zone-warning" id="zoneWarning"><span>!</span> OUTSIDE SAFE ZONE <small>MOVE NOW</small></div>
+    <div class="hit-marker" id="hitMarker">✕</div>
+
+    <section class="right-hud">
+      <div class="map-wrap"><canvas id="minimap" width="180" height="180"></canvas><div class="map-label">ISLAND • SECTOR 04</div></div>
+      <div class="weapon-card glass">
+        <div class="weapon-heading"><span>PRIMARY</span><span class="weapon-dot"></span></div>
+        <div class="weapon-name">RANGER <small>556</small></div>
+        <div class="ammo-row"><strong id="ammo">30</strong><span>/</span><span id="reserve">120</span><button id="reloadBtn" title="Reload">↻</button></div>
+        <div class="ammo-label">ASSAULT RIFLE <span>•</span> AUTO</div>
+      </div>
+    </section>
+
+    <section class="bottom-hud">
+      <div class="status-row glass">
+        <div class="health-icon">＋</div><div class="bar-wrap"><div class="bar-label"><span>VITALS</span><b id="healthNum">100</b></div><div class="bar"><i id="healthBar"></i></div></div>
+        <div class="shield-icon">◇</div><div class="bar-wrap shield-wrap"><div class="bar-label"><span>ARMOR</span><b id="armorNum">50</b></div><div class="bar armor-bar"><i id="armorBar"></i></div></div>
+      </div>
+      <div class="kill-feed glass"><span class="crosshair-mini">⌖</span><b id="killCount">0</b><small>ELIMS</small><span class="feed-divider"></span><span id="zoneTimer">ZONE 02:00</span></div>
+    </section>
+
+    <div class="center-reticle"><span></span><i></i></div>
+    <div class="toast" id="toast"></div>
+
+    <div class="touch-layer">
+      <div id="movePad" class="joystick"><div class="joy-ring"></div><div class="joy-knob"></div><span>MOVE</span></div>
+      <div class="touch-actions">
+        <button id="sprintBtn" class="action-chip">⚡<small>SPRINT</small></button>
+        <button id="aimBtn" class="action-chip aim-chip">⌖<small>AIM</small></button>
+        <button id="fireBtn" class="fire-button"><span>◎</span><small>FIRE</small></button>
+      </div>
+      <div id="lookZone" class="look-zone"><span>DRAG TO LOOK</span></div>
+    </div>
+
+    <div class="overlay" id="startOverlay">
+      <div class="overlay-art"><div class="sun"></div><div class="art-hill hill-one"></div><div class="art-hill hill-two"></div><div class="art-tree tree-a"></div><div class="art-tree tree-b"></div><div class="art-tree tree-c"></div><div class="art-runner"><i></i></div><div class="art-grid"></div></div>
+      <div class="start-content">
+        <div class="edition"><span></span> SURVIVAL PROTOCOL <span></span></div>
+        <h1>LAST<br><em>LIGHT</em></h1>
+        <div class="start-kicker">ISLAND DROP <b>•</b> SOLO ARENA</div>
+        <p>One island. Thirteen operators.<br>Only one makes it out.</p>
+        <button id="startBtn" class="start-button"><span>DEPLOY</span><b>→</b></button>
+        <div class="controls-hint"><span>⌨ WASD</span> MOVE <i></i> <span>🖱 DRAG</span> LOOK <i></i> <span>CLICK</span> FIRE</div>
+      </div>
+      <div class="overlay-foot"><span>© 2025 LAST LIGHT STUDIO</span><span>FIELD GUIDE <b>↗</b></span></div>
+    </div>
+
+    <div class="overlay pause-overlay hidden" id="pauseOverlay">
+      <div class="pause-panel glass"><div class="eyebrow">FIELD CONTROL</div><h2>PAUSED</h2><p>The island can wait.</p><button id="resumeBtn" class="start-button"><span>RESUME MATCH</span><b>→</b></button><button id="restartBtn" class="text-button">RESTART DROP</button></div>
+    </div>
+    <div class="overlay result-overlay hidden" id="resultOverlay">
+      <div class="result-panel glass"><div class="eyebrow" id="resultEyebrow">MATCH COMPLETE</div><h2 id="resultTitle">CHICKEN<br><em>DINNER</em></h2><p id="resultCopy">You own this island.</p><div class="result-stats"><div><b id="resultKills">0</b><small>ELIMINATIONS</small></div><div><b id="resultTime">00:00</b><small>SURVIVAL TIME</small></div></div><button id="playAgainBtn" class="start-button"><span>PLAY AGAIN</span><b>→</b></button></div>
+    </div>
+    <div class="rotate-hint">↻ <span>Rotate your device for the best view</span></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
